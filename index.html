@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betten-Planer Costa Azul 208</title>
+    <style>
+        /* Modernes, robustes Basis-Styling (unabhängig von externen Skripten) */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #111827;
+            color: #f3f4f6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .main-container {
+            max-width: 1100px;
+            width: 100%;
+            background-color: #1f2937;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #374151;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(to right, #34d399, #14b8a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* Größen-Schalter */
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 35px;
+        }
+
+        .toggle-box {
+            background-color: #030712;
+            padding: 4px;
+            border-radius: 12px;
+            display: flex;
+            border: 1px solid #374151;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn.active {
+            background-color: #10b981;
+            color: #030712;
+        }
+
+        /* Responsive Grid für die 3 Betten */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        /* Jede Bett-Karte */
+        .card {
+            background-color: #111827;
+            border: 2px solid transparent;
+            border-radius: 14px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .card.selected {
+            border-color: #10b981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Bild-Container (verhindert das Ausblasen der Bilder) */
+        .image-wrapper {
+            width: 100%;
+            height: 160px;
+            background-color: #1f2937;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 1px solid #374151;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #9ca3af;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .badge.highlight {
+            color: #10b981;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #ffffff;
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 15px;
+        }
+
+        .features-list {
+            list-style: none;
+            font-size: 13px;
+            color: #d1d5db;
+            margin-bottom: 25px;
+        }
+
+        .features-list li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .features-list li::before {
+            content: "•";
+            color: #10b981;
+            font-weight: bold;
+            font-size: 18px;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        /* Preise */
+        .price-box {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #1f2937;
+        }
+
+        .price-brl {
+            font-size: 24px;
+            font-weight: 900;
+            color: #ffffff;
+            font-family: monospace;
+        }
+
+        .price-eur {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 15px;
+            font-family: monospace;
+        }
+
+        .select-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            background-color: #1f2937;
+            color: #9ca3af;
+            border: 1px solid #374151;
+            transition: all 0.2s ease;
+        }
+
+        .card.selected .select-btn {
+            background-color: #10b981;
+            color: #111827;
+            border-color: #10b981;
+        }
+
+        /* Absende-Button */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(to right, #10b981, #14b8a6);
+            color: #111827;
+            border: none;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 900;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: opacity 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Media Query: Sorgt dafür, dass es auf dem Handy untereinander dargestellt wird */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .main-container {
+                padding: 16px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .image-wrapper {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h1>Betten-Auswahl für Penthouse 208</h1>
+        <p class="subtitle">Vergleichen Sie die verifizierten Angebote für das Apartment. Alle Optionen enthalten eine Matratze und eine geteilte Box mit Stauraum.</p>
+
+        <!-- Größen-Schalter -->
+        <div class="toggle-container">
+            <div class="toggle-box">
+                <button onclick="setSize('queen')" id="btn-queen" class="toggle-btn">
+                    Queen Size (158x198 cm)
+                </button>
+                <button onclick="setSize('king')" id="btn-king" class="toggle-btn active">
+                    King Size (193x203 cm)
+                </button>
+            </div>
+        </div>
+
+        <!-- Betten-Grid -->
+        <div class="cards-grid">
+            
+            <!-- Option 1: Ortobom -->
+            <div onclick="selectOption(1)" id="card-1" class="card">
+                <div>
+                    <div class="image-wrapper">
+                        <img src="[attachment_1](attachment)" id="img-opt-1" alt="Ortobom Sommier Bau Linho">
+                    </div>
+                    <span class="badge">Option 1</span>
+                    <h3 class="card-title">Ortobom Kombi</h3>
+                    <p class="card-sub">Novo Ouro Spring & Sommier Bau Linho</p>
+                    <ul class="features-list">
+                        <li>Hochwertiger Leinen-Bezug am Bettkasten.</li>
+                        <li>Geteilte Box (Bipartido) für einfachen Transport durch das Treppenhaus.</li>
+                        <li>Ortobom ist der bekannteste Matratzenhersteller Brasiliens.</li>
+                    </ul>
+                </div>
+                <div class="price-box">
+                    <div id="price-1" class="price-brl">R$ 7.828</div>
+                    <div id="price-eur-1" class="price-eur">~1.305 €</div>
+                    <button class="select-btn" id="select-btn-1">Auswählen</button>
+                </div>
+            </div>
+
+            <!-- Option 2: Emma (Favorit) -->
+            <div onclick="selectOption(2)" id="card-2" class="card selected">
+                <div>
+                    <div class="image-wrapper">
+                        <img src="https://eu-images.contentstack.com/v3/assets/blt167b24547e5b1906/blt1198d96255b61b88/69ca5b92810b4fbf48006911/BR_Kit-Perso_Cama-Bau_Hybrid-II_King_EASTER-26.png?format=auto&quality=80&width=1280&disable=upscale&crop=16:9" id="img-opt-2" alt="Emma Premium Kit">
+                    </div>
+                    <span class="badge highlight">Option 2 (Empfehlung)</span>
+                    <h3 class="card-title" style="color: #10b981;">Emma Premium</h3>
+                    <p class="card-sub">Cama Bau & Premium-Matratze</p>
+                    <ul class="features-list">
+                        <li>Bester Logistik-Vorteil: Wird vakuumverpackt und gerollt im kompakten Karton geliefert.</li>
+                        <li>Großer Stauraum im klappbaren Bettkasten für Bettwäsche und Kissen.</li>
+                        <li>Bekannte Marke, die auch internationale Gäste sofort wiedererkennen.</li>
+                    </ul>
+                </div>
+                <div class="price-box">
+                    <div id="price-2" class="price-brl">R$ 9.882</div>
+                    <div id="price-eur-2" class="price-eur">~1.647 €</div>
+                    <button class="select-btn" id="select-btn-2">Ausgewählt</button>
+                </div>
+            </div>
+
+            <!-- Option 3: Simmons -->
+            <div onclick="selectOption(3)" id="card-3" class="card">
+                <div>
+                    <div class="image-wrapper">
+                        <img src="[attachment_0](attachment)" id="img-opt-3" alt="Simmons Times Square Serie 3">
+                    </div>
+                    <span class="badge">Option 3</span>
+                    <h3 class="card-title">Simmons Luxus</h3>
+                    <p class="card-sub">Serie 3 - Times Square Conforto Macio</p>
+                    <ul class="features-list">
+                        <li>Absoluter 5-Sterne-Luxusstandard aus erstklassigen Hotels.</li>
+                        <li>Hervorragende Qualität und unübertroffener Komfort im High-End Segment.</li>
+                        <li>Sehr schweres Material bei der Lieferung über das Treppenhaus.</li>
+                    </ul>
+                </div>
+                <div class="price-box">
+                    <div id="price-3" class="price-brl">R$ 17.910</div>
+                    <div id="price-eur-3" class="price-eur">~2.985 €</div>
+                    <button class="select-btn" id="select-btn-3">Auswählen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Absende-Button -->
+        <button onclick="submitSelection()" class="submit-btn">
+            Auswahl absenden
+        </button>
+    </div>
+
+    <script>
+        var selectedSize = 'king';
+        var selectedOptionId = 2; // Emma ist Standard-Auswahl
+
+        // Deine Telefonnummer im korrekten Format für wa.me
+        var MY_PHONE_NUMBER = "5521990486565"; 
+
+        var data = {
+            queen: {
+                1: { brl: "R$ 6.568,00", eur: "~1.095 €", name: "Option 1 (Ortobom Leinen-Kombi - Queen)" },
+                2: { brl: "R$ 7.900,00", eur: "~1.316 €", name: "Option 2 (Emma Premium Hybrid Set - Queen)" },
+                3: { brl: "R$ 14.500,00", eur: "~2.416 €", name: "Option 3 (Simmons Times Square Set - Queen)" }
+            },
+            king: {
+                1: { brl: "R$ 7.828,00", eur: "~1.305 €", name: "Option 1 (Ortobom Leinen-Kombi - King)" },
+                2: { brl: "R$ 9.882,59", eur: "~1.647 €", name: "Option 2 (Emma Premium Hybrid Set - King)" },
+                3: { brl: "R$ 17.910,00", eur: "~2.985 €", name: "Option 3 (Simmons Times Square Set - King)" }
+            }
+        };
+
+        function setSize(size) {
+            selectedSize = size;
+            
+            // Buttons stylen
+            document.getElementById('btn-queen').className = size === 'queen' ? 'toggle-btn active' : 'toggle-btn';
+            document.getElementById('btn-king').className = size === 'king' ? 'toggle-btn active' : 'toggle-btn';
+            
+            // Preise aktualisieren
+            for (var i = 1; i <= 3; i++) {
+                document.getElementById('price-' + i).innerText = data[size][i].brl.replace(',00', '');
+                document.getElementById('price-eur-' + i).innerText = data[size][i].eur;
+            }
+            selectOption(selectedOptionId);
+        }
+
+        function selectOption(id) {
+            selectedOptionId = id;
+            for (var i = 1; i <= 3; i++) {
+                var card = document.getElementById('card-' + i);
+                var btn = document.getElementById('select-btn-' + i);
+                if (i === id) {
+                    card.className = "card selected";
+                    btn.className = "select-btn";
+                    btn.innerText = "Ausgewählt";
+                } else {
+                    card.className = "card";
+                    btn.className = "select-btn";
+                    btn.innerText = "Auswählen";
+                }
+            }
+        }
+
+        function submitSelection() {
+            var selection = data[selectedSize][selectedOptionId];
+            
+            var messageText = 'Hi Florian, ich habe mich entschieden!\n\n' +
+                'Größe: ' + selectedSize.toUpperCase() + '\n' +
+                'Gewähltes Modell: ' + selection.name + '\n' +
+                'Preis: ' + selection.brl + ' (' + selection.eur + ')\n\n' +
+                'Bitte so auf die Einkaufsliste setzen!';
+            
+            var encodedText = encodeURIComponent(messageText);
+            
+            // Zuverlässige Direktumleitung
+            window.location.href = 'https://wa.me/' + MY_PHONE_NUMBER + '?text=' + encodedText;
+        }
+
+        // Init mit King Size
+        setSize('king');
+    </script>
+</body>
+</html>
